@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Prediction Form</title>
+</head>
+<body>
+    <h1>FastAPI Prediction Form</h1>
+    <form id="prediction-form">
+        <label for="tweet-input">Enter Tweet:</label>
+        <input type="text" id="tweet-input" name="tweet" required>
+        <button type="button" onclick="predict()">Submit</button>
+    </form>
+
+    <h2>Result:</h2>
+    <p id="result"></p>
+
+    <script>
+        function predict() {
+            // Get the input value
+            var tweetInput = document.getElementById("tweet-input").value;
+
+            // Make an AJAX request to the FastAPI endpoint
+            fetch('/prediction/suicide', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "tweet": tweetInput
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the result
+                document.getElementById("result").innerText = `Prediction: ${data.prediction}`;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

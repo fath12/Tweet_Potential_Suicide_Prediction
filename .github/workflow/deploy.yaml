@@ -1,0 +1,36 @@
+name: Auto Predict
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+
+jobs:
+  auto_predict:
+    runs-on: ubuntu-22.04
+    env:
+      REGISTRY: "registry.digitalocean.com/dibimbing"
+      IMAGE_NAME: "fastapi-recommender-system"
+      PYTHONPATH: "app:$PYTHONPATH"
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Pull image from DigitalOcean Container Registry
+        run: docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):1c76ee4
+
+      - name: Run auto_predict.py
+        run: |
+          cd app/services
+          python auto_predict_service.py
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):1c76ee4
