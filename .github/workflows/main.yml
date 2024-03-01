@@ -1,0 +1,41 @@
+name: Auto Predict
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+
+jobs:
+  auto_predict:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: "registry.digitalocean.com/dibimbing"
+      IMAGE_NAME: "tweetdetecion"
+      PYTHONPATH: "app:$PYTHONPATH"
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r app/services/requirements.txt
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds=600
+
+      - name: Pull image from DigitalOcean Container Registry
+        run: docker pull ${{ secrets.DIGITALOCEAN_REGISTRY }}/${REGISTRY}/${IMAGE_NAME}:1c76ee4
+
+      - name: Run auto predict command
+        run: |
+          cd app/
+          python auto_predict.py
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push ${{ secrets.DIGITALOCEAN_REGISTRY }}/${REGISTRY}/${IMAGE_NAME}:1c76ee4
