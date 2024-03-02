@@ -19,7 +19,7 @@ on:
 
 env:
   REGISTRY: "registry.digitalocean.com/tweet1234"
-  IMAGE_NAME: "testimg"
+  IMAGE_NAME: "tweet_prediction"
 
 jobs:
   build_and_push:
