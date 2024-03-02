@@ -6,14 +6,14 @@ class TweetData(Base):
     __tablename__ = "tweetdata"
 
     id = Column(Integer, primary_key=True, index=True)
-    tweet = Column(Text(length=255), index=True)  # Adjust the length as needed
+    tweet = Column(Text(length=255), index=True) 
 
 
 class ResultData(Base):
     __tablename__ = "resultdata"
 
     id = Column(Integer, primary_key=True, index=True)
-    tweet = Column(Text(length=255), index=True)  # Adjust the length as needed
+    tweet = Column(Text(length=255), index=True)
     prediction = Column(Float, nullable=True)
 
 class TweetData_Pydantic(BaseModel):

@@ -18,10 +18,8 @@
 
     <script>
         function predict() {
-            // Get the input value
             var tweetInput = document.getElementById("tweet-input").value;
 
-            // Make an AJAX request to the FastAPI endpoint
             fetch('/prediction/suicide', {
                 method: 'POST',
                 headers: {
@@ -33,7 +31,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Display the result
                 document.getElementById("result").innerText = `Prediction: ${data.prediction}`;
             })
             .catch((error) => {
